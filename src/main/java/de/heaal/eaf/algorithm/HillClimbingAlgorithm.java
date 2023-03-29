@@ -24,11 +24,8 @@
 
 package de.heaal.eaf.algorithm;
 
-import de.heaal.eaf.base.GenericIndividualFactory;
-import de.heaal.eaf.base.Algorithm;
+import de.heaal.eaf.base.*;
 import de.heaal.eaf.evaluation.ComparatorIndividual;
-import de.heaal.eaf.base.Individual;
-import de.heaal.eaf.base.IndividualFactory;
 import de.heaal.eaf.mutation.Mutation;
 import de.heaal.eaf.mutation.MutationOptions;
 import java.util.Comparator;
@@ -42,6 +39,7 @@ public class HillClimbingAlgorithm extends Algorithm {
 
     private final IndividualFactory indFac;
     private final ComparatorIndividual terminationCriterion;
+    private  MutationOptions options;
     
     public HillClimbingAlgorithm(float[] min, float[] max, 
             Comparator<Individual> comparator, Mutation mutator, 
@@ -50,13 +48,33 @@ public class HillClimbingAlgorithm extends Algorithm {
         super(comparator, mutator);
         this.indFac = new GenericIndividualFactory(min, max);
         this.terminationCriterion = terminationCriterion;
+        this.options = new MutationOptions();
+        options.put(MutationOptions.KEYS.MUTATION_PROBABILITY, 1.0f);
     }
-    
+
+    static final float MAX_CHANGE = 0.2f;
     @Override
     public void nextGeneration() {
         super.nextGeneration();
 
         // HIER KÖNNTE DER ALGORITHMUS-LOOP STEHEN
+        Individual x0 = population.get(0);
+        Individual x1 = x0.copy();
+
+        //randomly change x1
+        mutator.mutate(x1, options);
+
+        //VecN rand_change = new VecN(new float[]{
+        //        rng.nextFloat(-MAX_CHANGE, MAX_CHANGE),
+        //        rng.nextFloat(-MAX_CHANGE, MAX_CHANGE)
+        //});
+        //x1.getGenome().add(rand_change);
+
+        //if x1 is better replace x0 with x1
+        if (comparator.compare(x0, x1) < 0){
+            System.out.println("Improvement");
+            population.set(0, x1);
+        }
     }
   
     @Override
@@ -69,10 +87,12 @@ public class HillClimbingAlgorithm extends Algorithm {
     @Override
     public void run() {
         initialize(indFac, 1);
+        int gens = 0;
         
         while(!isTerminationCondition()) {
-            System.out.println("Next gen");
+            System.out.println("Next gen: " + gens);
             nextGeneration();
+            gens++;
         }
     }   
 
