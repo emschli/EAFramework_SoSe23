@@ -32,6 +32,7 @@ import de.heaal.eaf.base.IndividualFactory;
 import de.heaal.eaf.mutation.Mutation;
 import de.heaal.eaf.mutation.MutationOptions;
 import java.util.Comparator;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Implementation of the Hill Climbing algorithm.
@@ -42,6 +43,9 @@ public class HillClimbingAlgorithm extends Algorithm {
 
     private final IndividualFactory indFac;
     private final ComparatorIndividual terminationCriterion;
+
+    private final MutationOptions options;
+    private int generationCounter;
     
     public HillClimbingAlgorithm(float[] min, float[] max, 
             Comparator<Individual> comparator, Mutation mutator, 
@@ -50,13 +54,24 @@ public class HillClimbingAlgorithm extends Algorithm {
         super(comparator, mutator);
         this.indFac = new GenericIndividualFactory(min, max);
         this.terminationCriterion = terminationCriterion;
+        this.options = new MutationOptions();
+        options.put(MutationOptions.KEYS.MUTATION_PROBABILITY, 1.0f);
+        this.generationCounter = 0;
     }
     
     @Override
     public void nextGeneration() {
         super.nextGeneration();
 
-        // HIER KÖNNTE DER ALGORITHMUS-LOOP STEHEN
+        Individual x0 = population.get(0);
+        Individual x1 = x0.copy();
+
+        mutator.mutate(x1, options);
+
+        if (comparator.compare(x1, x0) > 0) {
+            population.set(0, x1);
+        }
+
     }
   
     @Override
@@ -69,11 +84,16 @@ public class HillClimbingAlgorithm extends Algorithm {
     @Override
     public void run() {
         initialize(indFac, 1);
+        generationCounter = 0;
         
         while(!isTerminationCondition()) {
-            System.out.println("Next gen");
+            generationCounter++;
+            System.out.println("Generation " + generationCounter);
             nextGeneration();
         }
-    }   
+
+        System.out.println("Done!");
+        System.out.println("Found Minimum at: " + population.get(0).getGenome());
+    }
 
 }
