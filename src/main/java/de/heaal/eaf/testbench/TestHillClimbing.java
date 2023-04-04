@@ -28,7 +28,7 @@ import de.heaal.eaf.algorithm.HillClimbingAlgorithm;
 import de.heaal.eaf.evaluation.ComparatorIndividual;
 import de.heaal.eaf.base.Individual;
 import de.heaal.eaf.evaluation.MinimizeFunctionComparator;
-import de.heaal.eaf.mutation.RandomMutation;
+import de.heaal.eaf.mutation.HillClimbingMutation;
 import java.util.function.Function;
 
 /**
@@ -57,11 +57,11 @@ public class TestHillClimbing {
         var comparator = new MinimizeFunctionComparator(function);
 
         var algo = new HillClimbingAlgorithm(min, max,
-                comparator, new RandomMutation(min, max), new ComparatorIndividual(0.00000000000000001f));
+                comparator, new HillClimbingMutation(min, max), new ComparatorIndividual(0.00000000000000001f));
         algo.run();
     }
     public static void main(String[] args) {
-      doTheRun(sphere2D);
-//        doTheRun(ackley);
+     // doTheRun(sphere2D);
+        doTheRun(ackley);
     }
 }
