@@ -6,7 +6,9 @@ import de.heaal.eaf.evaluation.ComparatorIndividual;
 import de.heaal.eaf.mutation.Mutation;
 import de.heaal.eaf.mutation.MutationOptions;
 import de.heaal.eaf.selection.SelectionUtils;
+import de.heaal.eaf.testbench.GenerationWriter;
 
+import java.io.IOException;
 import java.util.*;
 
 public class GeneticAlgorithm extends Algorithm<Individual> {
@@ -16,6 +18,13 @@ public class GeneticAlgorithm extends Algorithm<Individual> {
     private int generationCounter;
     private final Combination<Individual> combinator;
     private final MutationOptions mutationOptions;
+    private final GenerationWriter generationWriter;
+
+    private final int numberOfGenerations;
+
+    private final boolean onlyQuitIfFound;
+
+    private final int numberOfElites;
 
     public GeneticAlgorithm(float[] min,
                             float[] max,
@@ -24,8 +33,16 @@ public class GeneticAlgorithm extends Algorithm<Individual> {
                             ComparatorIndividual comparatorIndividual,
                             int populationSize,
                             Combination<Individual> combinator,
-                            MutationOptions mutationOptions) {
+                            MutationOptions mutationOptions,
+                            GenerationWriter generationWriter,
+                            int numberOfGenerations,
+                            boolean onlyQuitIfFound,
+                            int numberOfElites) {
         super(comparator, mutator);
+        this.generationWriter = generationWriter;
+        this.numberOfGenerations = numberOfGenerations;
+        this.onlyQuitIfFound = onlyQuitIfFound;
+        this.numberOfElites = numberOfElites;
         this.individualFactory = new GenericIndividualFactory<>(min, max);
         this.comparatorIndividual = comparatorIndividual;
         this.generationCounter = 0;
@@ -37,7 +54,11 @@ public class GeneticAlgorithm extends Algorithm<Individual> {
     @Override
     public void nextGeneration() {
         super.nextGeneration();
+        population.sort(comparator);
         List<Individual> children = new ArrayList<>();
+
+        List<Individual> elites = population.asList().subList(0, numberOfElites);
+        children.addAll(elites);
 
         while (children.size() < population.size())  {
             Individual parent1 = SelectionUtils.selectNormal(population, rng, null);
@@ -59,12 +80,16 @@ public class GeneticAlgorithm extends Algorithm<Individual> {
 
     @Override
     protected boolean isTerminationCondition() {
-        Individual best = population.get(0);
-        return comparator.compare(best, comparatorIndividual) > 0;
+        if (!onlyQuitIfFound) {
+            return generationCounter == numberOfGenerations;
+        } else {
+            Individual best = population.get(0);
+            return comparator.compare(best, comparatorIndividual) > 0;
+        }
     }
 
     @Override
-    protected void run() {
+    public void run() {
         initialize(individualFactory, populationSize);
         population.sort(comparator);
 
@@ -72,9 +97,24 @@ public class GeneticAlgorithm extends Algorithm<Individual> {
             generationCounter++;
             System.out.println("Generation " + generationCounter);
             nextGeneration();
+            if (!onlyQuitIfFound) {
+                try {
+                    generationWriter.writeGeneration(population);
+                } catch (IOException e) {
+                    System.out.println("Error while writing to file!");
+                    System.out.println(e);
+                }
+            }
         }
 
         System.out.println("Done!");
         System.out.println("Found Minimum at: " + population.get(0).getGenome());
+
+        try {
+            generationWriter.close();
+        } catch (IOException e) {
+            System.out.println("Error while closing File!");
+            System.out.println(e);
+        }
     }
 }
