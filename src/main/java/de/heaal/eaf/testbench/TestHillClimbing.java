@@ -28,8 +28,10 @@ import de.heaal.eaf.algorithm.HillClimbingAlgorithm;
 import de.heaal.eaf.evaluation.ComparatorIndividual;
 import de.heaal.eaf.base.Individual;
 import de.heaal.eaf.evaluation.MinimizeFunctionComparator;
-import de.heaal.eaf.mutation.HillClimbingMutation;
+import de.heaal.eaf.mutation.SmallStepMutation;
 import java.util.function.Function;
+
+import static de.heaal.eaf.testbench.Functions.*;
 
 /**
  * Test bench for the Hill Climbing algorithm.
@@ -37,19 +39,7 @@ import java.util.function.Function;
  * @author Christian Lins <christian.lins@haw-hamburg.de>
  */
 public class TestHillClimbing {
-    private static Function<Individual, Float> sphere2D = (ind) -> {
-        var x0 = ind.getGenome().array()[0];
-        var x1 = ind.getGenome().array()[1];
-        return x0*x0 + x1*x1;
-    };
 
-    private static Function<Individual, Float> ackley = (ind) -> {
-        var x = ind.getGenome().array()[0];
-        var y = ind.getGenome().array()[1];
-
-        return (float) (-20.0f * Math.exp(-0.2* Math.sqrt(0.5 * (Math.pow(x, 2) + Math.pow(y, 2)) ))
-        - Math.exp(0.5 * (Math.cos(2*Math.PI*x) + Math.cos(2*Math.PI*y)) ) + Math.E + 20);
-    };
     private static void doTheRun(Function<Individual, Float> function) {
         float[] min = {-5.12f, -5.12f};
         float[] max = {+5.12f, +5.12f};
@@ -57,11 +47,11 @@ public class TestHillClimbing {
         var comparator = new MinimizeFunctionComparator(function);
 
         var algo = new HillClimbingAlgorithm(min, max,
-                comparator, new HillClimbingMutation(min, max), new ComparatorIndividual(0.001f));
+                comparator, new SmallStepMutation(min, max), new ComparatorIndividual(0.001f));
         algo.run();
     }
     public static void main(String[] args) {
      // doTheRun(sphere2D);
-        doTheRun(ackley);
+        doTheRun(ACKLEY);
     }
 }

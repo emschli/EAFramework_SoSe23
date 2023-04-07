@@ -4,12 +4,12 @@ import de.heaal.eaf.base.Individual;
 
 import java.util.Random;
 
-public class HillClimbingMutation implements Mutation {
+public class SmallStepMutation implements Mutation {
     private Random rng;
     private final float[] min;
     private final float[] max;
 
-    public HillClimbingMutation(float[] min, float[] max) {
+    public SmallStepMutation(float[] min, float[] max) {
         assert min.length == max.length;
 
         this.min = min;

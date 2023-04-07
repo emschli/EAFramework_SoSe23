@@ -129,4 +129,8 @@ public class Population<T extends Individual> implements Iterable<T> {
         return individuals.stream()
                 .filter(prdct).collect(Collectors.toList());
     }
+
+    public void replace(List<T> newPopulation) {
+        individuals = newPopulation;
+    }
 }

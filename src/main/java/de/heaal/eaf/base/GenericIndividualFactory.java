@@ -30,7 +30,7 @@ package de.heaal.eaf.base;
  * @author Christian Lins <christian.lins@haw-hamburg.de>
  * @param <T>
  */
-public class GenericIndividualFactory<T> extends AbstractIndividualFactory<AbstractIndividual> {
+public class GenericIndividualFactory<T extends Individual> extends AbstractIndividualFactory<T> {
 
     protected float[] min, max;
     
