@@ -32,7 +32,6 @@ import de.heaal.eaf.base.IndividualFactory;
 import de.heaal.eaf.mutation.Mutation;
 import de.heaal.eaf.mutation.MutationOptions;
 import java.util.Comparator;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Implementation of the Hill Climbing algorithm.
@@ -43,7 +42,6 @@ public class HillClimbingAlgorithm extends Algorithm {
 
     private final IndividualFactory indFac;
     private final ComparatorIndividual terminationCriterion;
-
     private final MutationOptions options;
     private int generationCounter;
     
