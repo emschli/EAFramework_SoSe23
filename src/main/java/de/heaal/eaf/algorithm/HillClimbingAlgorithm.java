@@ -26,11 +26,15 @@ package de.heaal.eaf.algorithm;
 
 import de.heaal.eaf.base.GenericIndividualFactory;
 import de.heaal.eaf.base.Algorithm;
+import de.heaal.eaf.crossover.Combination;
 import de.heaal.eaf.evaluation.ComparatorIndividual;
 import de.heaal.eaf.base.Individual;
 import de.heaal.eaf.base.IndividualFactory;
 import de.heaal.eaf.mutation.Mutation;
 import de.heaal.eaf.mutation.MutationOptions;
+import de.heaal.eaf.testbench.GenerationWriter;
+
+import java.io.IOException;
 import java.util.Comparator;
 
 /**
@@ -40,23 +44,40 @@ import java.util.Comparator;
  */
 public class HillClimbingAlgorithm extends Algorithm {
 
-    private final IndividualFactory indFac;
-    private final ComparatorIndividual terminationCriterion;
-    private final MutationOptions options;
+    private final IndividualFactory individualFactory;
+    private final ComparatorIndividual comparatorIndividual;
     private int generationCounter;
-    
-    public HillClimbingAlgorithm(float[] min, float[] max, 
-            Comparator<Individual> comparator, Mutation mutator, 
-            ComparatorIndividual terminationCriterion) 
+    private final int numberOfGenerations;
+    private final GenerationWriter generationWriter;
+    private final boolean onlyQuitIfFound;
+    private final Combination<Individual> combinator;
+
+    //
+    private final MutationOptions mutationOptions;
+
+    public HillClimbingAlgorithm(float[] min,
+                                 float[] max,
+                                 Comparator<Individual> comparator,
+                                 Mutation mutator,
+                                 ComparatorIndividual comparatorIndividual,
+                                 int numberOfGenerations,
+                                 GenerationWriter generationWriter,
+                                 boolean onlyQuitIfFound,
+                                 Combination<Individual> combinator)
     {
         super(comparator, mutator);
-        this.indFac = new GenericIndividualFactory(min, max);
-        this.terminationCriterion = terminationCriterion;
-        this.options = new MutationOptions();
-        options.put(MutationOptions.KEYS.MUTATION_PROBABILITY, 1.0f);
+        this.numberOfGenerations = numberOfGenerations;
+        this.generationWriter = generationWriter;
+        this.onlyQuitIfFound = onlyQuitIfFound;
+        this.combinator = combinator;
+        this.individualFactory = new GenericIndividualFactory(min, max);
+        this.comparatorIndividual = comparatorIndividual;
+        this.mutationOptions = new MutationOptions();
+        mutationOptions.put(MutationOptions.KEYS.MUTATION_PROBABILITY, 1.0f);
         this.generationCounter = 0;
     }
-    
+
+
     @Override
     public void nextGeneration() {
         super.nextGeneration();
@@ -64,7 +85,7 @@ public class HillClimbingAlgorithm extends Algorithm {
         Individual x0 = population.get(0);
         Individual x1 = x0.copy();
 
-        mutator.mutate(x1, options);
+        mutator.mutate(x1, mutationOptions);
 
         if (comparator.compare(x1, x0) > 0) {
             population.set(0, x1);
@@ -74,24 +95,42 @@ public class HillClimbingAlgorithm extends Algorithm {
   
     @Override
     public boolean isTerminationCondition() {
-        // Because we only have a population of 1 individual we know that
-        // this individual is our current best.
-        return comparator.compare(population.get(0), terminationCriterion) > 0;
+        if (!onlyQuitIfFound) {
+            return generationCounter == numberOfGenerations;
+        } else {
+            Individual best = population.get(0);
+            return comparator.compare(best, comparatorIndividual) > 0;
+        }
     }
 
     @Override
     public void run() {
-        initialize(indFac, 1);
+        initialize(individualFactory, 1);
         generationCounter = 0;
         
         while(!isTerminationCondition()) {
             generationCounter++;
             System.out.println("Generation " + generationCounter);
             nextGeneration();
+            if (!onlyQuitIfFound) {
+                try {
+                    generationWriter.writeGeneration(population);
+                } catch (IOException e) {
+                    System.out.println("Error while writing to file!");
+                    System.out.println(e);
+                }
+            }
         }
 
         System.out.println("Done!");
         System.out.println("Found Minimum at: " + population.get(0).getGenome());
+
+        try {
+            generationWriter.close();
+        } catch (IOException e) {
+            System.out.println("Error while closing File!");
+            System.out.println(e);
+        }
     }
 
 }

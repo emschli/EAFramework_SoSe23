@@ -1,5 +1,6 @@
 package de.heaal.eaf.testbench;
 import de.heaal.eaf.algorithm.GeneticAlgorithm;
+import de.heaal.eaf.algorithm.HillClimbingAlgorithm;
 import de.heaal.eaf.base.Individual;
 import de.heaal.eaf.crossover.Combination;
 import de.heaal.eaf.crossover.MeanCrossover;
@@ -35,11 +36,11 @@ public class TestGeneticAlgorithm {
         this.mutation = new SmallStepMutation(min, max);
     }
 
-    public void doRun(String fileName,
-                      Comparator<Individual> comparator,
-                      Combination<Individual> crossover,
-                      MutationOptions mutationOptions,
-                      int numberOfElites) throws IOException{
+    public void doEARun(String fileName,
+                        Comparator<Individual> comparator,
+                        Combination<Individual> crossover,
+                        MutationOptions mutationOptions,
+                        int numberOfElites) throws IOException {
 
         GenerationWriter writer = new GenerationWriter(BASEPATH + fileName);
 
@@ -60,11 +61,31 @@ public class TestGeneticAlgorithm {
         algorithm.run();
     }
 
-    public void doRun(String fileName,
-                      Comparator<Individual> comparator,
-                      Combination<Individual> crossover,
-                      MutationOptions mutationOptions) throws IOException {
-        doRun(fileName, comparator, crossover, mutationOptions, 0);
+    public void doEARun(String fileName,
+                        Comparator<Individual> comparator,
+                        Combination<Individual> crossover,
+                        MutationOptions mutationOptions) throws IOException {
+        doEARun(fileName, comparator, crossover, mutationOptions, 0);
+    }
+
+    public void doHCRun(String fileName,
+                        Comparator<Individual> comparator,
+                        Combination<Individual> crossover) throws IOException {
+        GenerationWriter writer = new GenerationWriter(BASEPATH + fileName);
+
+        var algorithm = new HillClimbingAlgorithm(
+                min,
+                max,
+                comparator,
+                mutation,
+                comparatorIndividual,
+                NUMBER_OF_GENERATIONS,
+                writer,
+                ONLY_QUIT_IF_FOUND,
+                crossover
+        );
+
+        algorithm.run();
     }
 
     public static void main(String[] args) throws IOException {
@@ -87,29 +108,35 @@ public class TestGeneticAlgorithm {
 
         //Rekombination
         //SinglePointCrossover & Sphere2D
-        test.doRun(
+        test.doEARun(
                 "GA_crossover_singlePoint.csv",
                 comparatorSphere2D,
                 singlePointCrossover,
                 mutationOptions1
         );
 
-        //MeanCrossover & Sphere 2D
-        test.doRun(
-                "GA_crossover_mean.csv",
+        test.doHCRun(
+                "HC_crossover_singlePoint.csv",
                 comparatorSphere2D,
-                meanCrossover,
-                mutationOptions1
+                singlePointCrossover
         );
 
-        //Elitism
-        //SinglePointCrossover & Sphere2D
-        test.doRun(
-                "GA_crossover_singlePoint.csv",
-                comparatorSphere2D,
-                singlePointCrossover,
-                mutationOptions1,
-                1
-        );
+//        //MeanCrossover & Sphere 2D
+//        test.doEARun(
+//                "GA_crossover_mean.csv",
+//                comparatorSphere2D,
+//                meanCrossover,
+//                mutationOptions1
+//        );
+//
+//        //Elitism
+//        //SinglePointCrossover & Sphere2D
+//        test.doEARun(
+//                "GA_crossover_singlePoint.csv",
+//                comparatorSphere2D,
+//                singlePointCrossover,
+//                mutationOptions1,
+//                1
+//        );
     }
 }

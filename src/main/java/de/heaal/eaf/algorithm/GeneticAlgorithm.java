@@ -14,16 +14,15 @@ import java.util.*;
 public class GeneticAlgorithm extends Algorithm<Individual> {
     private final IndividualFactory<Individual> individualFactory;
     private final ComparatorIndividual comparatorIndividual;
-    private final int populationSize;
-    private int generationCounter;
-    private final Combination<Individual> combinator;
     private final MutationOptions mutationOptions;
-    private final GenerationWriter generationWriter;
-
+    private int generationCounter;
     private final int numberOfGenerations;
-
+    private final GenerationWriter generationWriter;
     private final boolean onlyQuitIfFound;
+    private final Combination<Individual> combinator;
 
+    //
+    private final int populationSize;
     private final int numberOfElites;
 
     public GeneticAlgorithm(float[] min,
