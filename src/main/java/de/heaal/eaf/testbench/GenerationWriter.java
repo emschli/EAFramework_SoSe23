@@ -11,12 +11,9 @@ import java.nio.file.Path;
 import java.util.Iterator;
 
 public class GenerationWriter {
-    private String pathToFile;
-
-    private BufferedWriter bufferedWriter;
+    private final BufferedWriter bufferedWriter;
 
     public GenerationWriter(String pathToFile) throws IOException {
-        this.pathToFile = pathToFile;
         Path path = Path.of(pathToFile);
         Files.deleteIfExists(path);
         Files.createFile(path);
@@ -24,6 +21,9 @@ public class GenerationWriter {
         this.bufferedWriter = new BufferedWriter(fileWriter);
     }
 
+    /**
+     * May only be used if Individuals in population have cache set.
+     */
     public void writeGeneration(Population<Individual> population) throws IOException {
         int generationSize = population.size();
         int counter = 1;
@@ -31,7 +31,7 @@ public class GenerationWriter {
         Iterator<Individual> iterator = population.iterator();
         while (iterator.hasNext() && counter < generationSize) {
             Individual individual = iterator.next();
-            bufferedWriter.write(Float.toString(individual.getCache())+ " ");
+            bufferedWriter.write(individual.getCache() + " ");
             counter++;
         }
 
