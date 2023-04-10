@@ -50,7 +50,6 @@ public class HillClimbingAlgorithm extends Algorithm {
     private final int numberOfGenerations;
     private final GenerationWriter generationWriter;
     private final boolean onlyQuitIfFound;
-    private final Combination<Individual> combinator;
 
     //
     private final MutationOptions mutationOptions;
@@ -62,14 +61,12 @@ public class HillClimbingAlgorithm extends Algorithm {
                                  ComparatorIndividual comparatorIndividual,
                                  int numberOfGenerations,
                                  GenerationWriter generationWriter,
-                                 boolean onlyQuitIfFound,
-                                 Combination<Individual> combinator)
+                                 boolean onlyQuitIfFound)
     {
         super(comparator, mutator);
         this.numberOfGenerations = numberOfGenerations;
         this.generationWriter = generationWriter;
         this.onlyQuitIfFound = onlyQuitIfFound;
-        this.combinator = combinator;
         this.individualFactory = new GenericIndividualFactory(min, max);
         this.comparatorIndividual = comparatorIndividual;
         this.mutationOptions = new MutationOptions();
