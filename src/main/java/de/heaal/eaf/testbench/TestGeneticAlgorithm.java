@@ -9,6 +9,7 @@ import de.heaal.eaf.evaluation.ComparatorIndividual;
 import de.heaal.eaf.evaluation.MinimizeFunctionComparator;
 import de.heaal.eaf.mutation.Mutation;
 import de.heaal.eaf.mutation.MutationOptions;
+import de.heaal.eaf.mutation.RandomMutation;
 import de.heaal.eaf.mutation.SmallStepMutation;
 
 import java.io.IOException;
@@ -33,7 +34,7 @@ public class TestGeneticAlgorithm {
         this.comparatorIndividual = new ComparatorIndividual(COMPARATOR_INDIVIDUAL_VALUE);
         this.min = new float[]{-5.12f, -5.12f};
         this.max = new float[]{+5.12f, +5.12f};
-        this.mutation = new SmallStepMutation(min, max);
+        this.mutation = new RandomMutation(min, max);
     }
 
     public void doEARun(String fileName,
@@ -76,7 +77,7 @@ public class TestGeneticAlgorithm {
                 min,
                 max,
                 comparator,
-                mutation,
+                new SmallStepMutation(min, max),
                 comparatorIndividual,
                 NUMBER_OF_GENERATIONS,
                 writer,

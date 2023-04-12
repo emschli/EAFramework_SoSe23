@@ -53,6 +53,7 @@ ax.set(xlabel="Generationen", ylabel="Mean Sphere2D value", title="Sphere2D (Mea
 ax.legend()
 plt.show()
 
+
 # 1.1.2 Min
 y1 = getMinPerGeneration("1_2D_singlePoint_low.csv")
 y2 = getMinPerGeneration("1_2D_singlePoint_high.csv")
@@ -87,6 +88,7 @@ ax.plot(x, y5, label="Hillclimbing")
 ax.set(xlabel="Generationen", ylabel="Mean Ackley value", title="Ackley (Mean per Generation)")
 ax.legend()
 plt.show()
+
 
 # 1.2.1 Min
 y1 = getMinPerGeneration("1_ACK_singlePoint_low.csv")
