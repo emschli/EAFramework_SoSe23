@@ -39,7 +39,7 @@ public class HillClimbingAlgorithm extends Algorithm {
 
     private final IndividualFactory indFac;
     private final ComparatorIndividual terminationCriterion;
-    private  MutationOptions options;
+    private final MutationOptions options;
     
     public HillClimbingAlgorithm(float[] min, float[] max, 
             Comparator<Individual> comparator, Mutation mutator, 
@@ -57,7 +57,6 @@ public class HillClimbingAlgorithm extends Algorithm {
     public void nextGeneration() {
         super.nextGeneration();
 
-        // HIER KÖNNTE DER ALGORITHMUS-LOOP STEHEN
         Individual x0 = population.get(0);
         Individual x1 = x0.copy();
 

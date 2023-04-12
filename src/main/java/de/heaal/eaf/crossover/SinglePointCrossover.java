@@ -38,7 +38,6 @@ import java.util.Random;
  * @param <T>
  */
 public class SinglePointCrossover<T extends Individual> implements Combination<T> {
-
     protected Random rng;
     
     @Override
@@ -55,8 +54,8 @@ public class SinglePointCrossover<T extends Individual> implements Combination<T
         int crossPoint = rng.nextInt(dim);
         System.arraycopy(
                 parents[1].getGenome().array(), 
-                crossPoint, 
-                parents[0].getGenome().array(), 
+                crossPoint,
+                child.getGenome().array(),
                 crossPoint, 
                 dim - crossPoint);
         

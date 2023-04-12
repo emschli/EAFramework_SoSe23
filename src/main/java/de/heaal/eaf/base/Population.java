@@ -64,6 +64,8 @@ public class Population<T extends Individual> implements Iterable<T> {
      */
     public Population(int initialCapacity) {
         individuals = new ArrayList<>(initialCapacity);
+        while (individuals.size() < initialCapacity)
+            individuals.add(null);
     }
     
     public void add(T ind) {
