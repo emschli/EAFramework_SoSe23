@@ -11,8 +11,8 @@ import de.heaal.eaf.testbench.GenerationWriter;
 import java.io.IOException;
 import java.util.*;
 
-public class GeneticAlgorithm extends Algorithm<Individual> {
-    private final IndividualFactory<Individual> individualFactory;
+public class GeneticAlgorithm extends Algorithm {
+    private final IndividualFactory individualFactory;
     private final ComparatorIndividual comparatorIndividual;
     private final MutationOptions mutationOptions;
     private int generationCounter;
@@ -42,7 +42,7 @@ public class GeneticAlgorithm extends Algorithm<Individual> {
         this.numberOfGenerations = numberOfGenerations;
         this.onlyQuitIfFound = onlyQuitIfFound;
         this.numberOfElites = numberOfElites;
-        this.individualFactory = new GenericIndividualFactory<>(min, max);
+        this.individualFactory = new GenericIndividualFactory(min, max);
         this.comparatorIndividual = comparatorIndividual;
         this.generationCounter = 0;
         this.populationSize = populationSize;

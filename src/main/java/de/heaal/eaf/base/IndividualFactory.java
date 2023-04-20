@@ -28,11 +28,9 @@ import java.util.Random;
 
 /**
  * Interface for all factories that create individuals.
- * 
  * @author Christian Lins <christian.lins@haw-hamburg.de>
- * @param <T> Specific Individual type
  */
-public interface IndividualFactory<T extends Individual> {
+public interface IndividualFactory {
     void setRandom(Random rng);
     
     Individual create();

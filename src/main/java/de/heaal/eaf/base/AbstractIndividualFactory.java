@@ -30,9 +30,8 @@ import java.util.Random;
  * An abstract factory for creating individuals (factory pattern).
  * 
  * @author Christian Lins <christian.lins@haw-hamburg.de>
- * @param <T>
  */
-public abstract class AbstractIndividualFactory<T extends Individual> implements IndividualFactory<T>{
+public abstract class AbstractIndividualFactory implements IndividualFactory {
     protected Random rng = new Random();
     
     @Override

@@ -32,7 +32,7 @@ import java.util.stream.IntStream;
  * 
  * @author Christian Lins <christian.lins@haw-hamburg.de>
  */
-public class ParticleFactory extends GenericIndividualFactory<Particle> {
+public class ParticleFactory extends GenericIndividualFactory {
     
     public ParticleFactory(float[] min, float[] max) {
         super(min, max);

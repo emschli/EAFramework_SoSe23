@@ -37,11 +37,10 @@ import java.util.stream.Stream;
  * Class representing an algorithm's population.
  * 
  * @author Christian Lins <christian.lins@haw-hamburg.de>
- * @param <T>
  */
-public class Population<T extends Individual> implements Iterable<T> {
+public class Population implements Iterable<Individual> {
     
-    protected List<T> individuals;
+    protected List<Individual> individuals;
     
     /**
      * Create and initialize this population with num individuals using the
@@ -50,8 +49,8 @@ public class Population<T extends Individual> implements Iterable<T> {
      * @param iFak
      * @param num 
      */
-    public Population(IndividualFactory<T> iFak, int num) {
-        individuals = (List<T>) Stream.generate(() -> iFak.create())
+    public Population(IndividualFactory iFak, int num) {
+        individuals = (List<Individual>) Stream.generate(() -> iFak.create())
                             .limit(num)
                             .collect(Collectors.toList());
     }
@@ -66,11 +65,11 @@ public class Population<T extends Individual> implements Iterable<T> {
         individuals = new ArrayList<>(initialCapacity);
     }
     
-    public void add(T ind) {
+    public void add(Individual ind) {
         individuals.add(ind);
     }
     
-    public T get(int idx) {
+    public Individual get(int idx) {
         return individuals.get(idx);
     }
     
@@ -83,11 +82,11 @@ public class Population<T extends Individual> implements Iterable<T> {
      * 
      * @return Flat-copy of the individuals list. 
      */
-    public List<T> asList() {
+    public List<Individual> asList() {
         return new ArrayList<>(individuals);
     }
     
-    public void set(int idx, T ind) {
+    public void set(int idx, Individual ind) {
         individuals.set(idx, ind);
     }
     
@@ -104,16 +103,16 @@ public class Population<T extends Individual> implements Iterable<T> {
     }
 
     @Override
-    public void forEach(Consumer<? super T> action) {
+    public void forEach(Consumer<? super Individual> action) {
         individuals.forEach(action);
     }
 
     @Override
-    public Iterator<T> iterator() {
+    public Iterator<Individual> iterator() {
         return individuals.iterator();
     }
     
-    public void sort(Comparator<T> cmp) {
+    public void sort(Comparator<Individual> cmp) {
         // This should sort descending
         individuals.sort(cmp.reversed());
     }
@@ -125,12 +124,12 @@ public class Population<T extends Individual> implements Iterable<T> {
      * @param prdct
      * @return 
      */
-    public List<T> filter(Predicate<T> prdct) {
+    public List<Individual> filter(Predicate<Individual> prdct) {
         return individuals.stream()
                 .filter(prdct).collect(Collectors.toList());
     }
 
-    public void replace(List<T> newPopulation) {
+    public void replace(List<Individual> newPopulation) {
         individuals = newPopulation;
     }
 }

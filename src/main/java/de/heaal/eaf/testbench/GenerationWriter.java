@@ -24,7 +24,7 @@ public class GenerationWriter {
     /**
      * May only be used if Individuals in population have cache set.
      */
-    public void writeGeneration(Population<Individual> population) throws IOException {
+    public void writeGeneration(Population population) throws IOException {
         int generationSize = population.size();
         int counter = 1;
 

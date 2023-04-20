@@ -25,53 +25,54 @@
 package de.heaal.eaf.base;
 
 import de.heaal.eaf.mutation.Mutation;
+import de.heaal.eaf.testbench.GenerationWriter;
+
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.Random;
 
 /**
  * An abstract Algorithm class.The Algorithm class is intended to represent a specific algorithm and holds
  values of one run of this algorithm.
- * 
  * It is not recommended to reuse Algorithm
  objects but create new ones for every new run of an algorithm.
  * 
  * @author Christian Lins <christian.lins@haw-hamburg.de>
- * @param <T>
  */
-public abstract class Algorithm<T extends Individual> {
+public abstract class Algorithm {
     
-    protected Comparator<T> comparator;
+    protected Comparator<Individual> comparator;
     protected Mutation mutator;
-    protected Population<T> population;
+    protected Population population;
     protected Random rng;
-    
+    private GenerationWriter generationWriter = null;
     public Algorithm(Random rng) {
         this.rng = rng;
     }
     
-    public Algorithm(Random rng, Comparator<T> comparator) {
+    public Algorithm(Random rng, Comparator<Individual> comparator) {
         this(comparator, null, rng);
     }
     
-    public Algorithm(Comparator<T> comparator, Mutation mutator) {
+    public Algorithm(Comparator<Individual> comparator, Mutation mutator) {
         this(comparator, mutator, new Random());
     }
     
-    public Algorithm(Comparator<T> comparator, Mutation mutator, long seed) {
+    public Algorithm(Comparator<Individual> comparator, Mutation mutator, long seed) {
         this(comparator, mutator, new Random(seed));
     }
     
-    public Algorithm(Comparator<T> comparator, Mutation mutator, Random rng) {
+    public Algorithm(Comparator<Individual> comparator, Mutation mutator, Random rng) {
         this.rng = rng;
         this.comparator = comparator;
         this.mutator = mutator;
-        
+
         if (mutator != null)
             mutator.setRandom(rng);
     }
     
     protected void createPopulation(IndividualFactory iFak, int num) {
-        population = new Population<>(iFak, num);
+        population = new Population(iFak, num);
     }
     
     protected abstract boolean isTerminationCondition();
@@ -82,6 +83,16 @@ public abstract class Algorithm<T extends Individual> {
     
     protected void nextGeneration() {
         population.nextGeneration();
+    }
+
+    protected void setGenerationWriter(String path) throws IOException {
+        generationWriter = new GenerationWriter(path);
+    }
+
+    protected void writeGeneration() throws IOException{
+        if (generationWriter != null) {
+            generationWriter.writeGeneration(population);
+        }
     }
     
     protected abstract void run();
