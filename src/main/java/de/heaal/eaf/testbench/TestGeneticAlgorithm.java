@@ -43,8 +43,6 @@ public class TestGeneticAlgorithm {
                         MutationOptions mutationOptions,
                         int numberOfElites) throws IOException {
 
-        GenerationWriter writer = new GenerationWriter(BASEPATH + fileName);
-
         var algorithm = new GeneticAlgorithm(
                 min,
                 max,
@@ -54,11 +52,11 @@ public class TestGeneticAlgorithm {
                 POPULATION_SIZE,
                 crossover,
                 mutationOptions,
-                writer,
                 NUMBER_OF_GENERATIONS,
                 ONLY_QUIT_IF_FOUND,
                 numberOfElites);
 
+        algorithm.setGenerationWriter(BASEPATH + fileName);
         algorithm.run();
     }
 
@@ -71,7 +69,6 @@ public class TestGeneticAlgorithm {
 
     public void doHCRun(String fileName,
                         Comparator<Individual> comparator) throws IOException {
-        GenerationWriter writer = new GenerationWriter(BASEPATH + fileName);
 
         var algorithm = new HillClimbingAlgorithm(
                 min,
@@ -80,9 +77,10 @@ public class TestGeneticAlgorithm {
                 new SmallStepMutation(min, max),
                 comparatorIndividual,
                 NUMBER_OF_GENERATIONS,
-                writer,
                 ONLY_QUIT_IF_FOUND
         );
+
+        algorithm.setGenerationWriter(BASEPATH + fileName);
 
         algorithm.run();
     }

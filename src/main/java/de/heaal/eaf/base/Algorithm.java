@@ -85,7 +85,7 @@ public abstract class Algorithm {
         population.nextGeneration();
     }
 
-    protected void setGenerationWriter(String path) throws IOException {
+    public void setGenerationWriter(String path) throws IOException {
         generationWriter = new GenerationWriter(path);
     }
 
@@ -94,6 +94,12 @@ public abstract class Algorithm {
             generationWriter.writeGeneration(population);
         }
     }
+
+    protected void closeWriter() throws IOException {
+        if (generationWriter != null) {
+            generationWriter.close();
+        }
+    }
     
-    protected abstract void run();
+    protected abstract void run() throws IOException;
 }

@@ -17,7 +17,6 @@ public class GeneticAlgorithm extends Algorithm {
     private final MutationOptions mutationOptions;
     private int generationCounter;
     private final int numberOfGenerations;
-    private final GenerationWriter generationWriter;
     private final boolean onlyQuitIfFound;
     private final Combination<Individual> combinator;
 
@@ -33,12 +32,10 @@ public class GeneticAlgorithm extends Algorithm {
                             int populationSize,
                             Combination<Individual> combinator,
                             MutationOptions mutationOptions,
-                            GenerationWriter generationWriter,
                             int numberOfGenerations,
                             boolean onlyQuitIfFound,
                             int numberOfElites) {
         super(comparator, mutator);
-        this.generationWriter = generationWriter;
         this.numberOfGenerations = numberOfGenerations;
         this.onlyQuitIfFound = onlyQuitIfFound;
         this.numberOfElites = numberOfElites;
@@ -88,7 +85,7 @@ public class GeneticAlgorithm extends Algorithm {
     }
 
     @Override
-    public void run() {
+    public void run() throws IOException {
         initialize(individualFactory, populationSize);
         population.sort(comparator);
 
@@ -97,23 +94,13 @@ public class GeneticAlgorithm extends Algorithm {
             System.out.println("Generation " + generationCounter);
             nextGeneration();
             if (!onlyQuitIfFound) {
-                try {
-                    generationWriter.writeGeneration(population);
-                } catch (IOException e) {
-                    System.out.println("Error while writing to file!");
-                    System.out.println(e);
-                }
+               writeGeneration();
             }
         }
 
         System.out.println("Done!");
         System.out.println("Found Minimum at: " + population.get(0).getGenome());
 
-        try {
-            generationWriter.close();
-        } catch (IOException e) {
-            System.out.println("Error while closing File!");
-            System.out.println(e);
-        }
+        closeWriter();
     }
 }

@@ -26,7 +26,6 @@ package de.heaal.eaf.algorithm;
 
 import de.heaal.eaf.base.GenericIndividualFactory;
 import de.heaal.eaf.base.Algorithm;
-import de.heaal.eaf.crossover.Combination;
 import de.heaal.eaf.evaluation.ComparatorIndividual;
 import de.heaal.eaf.base.Individual;
 import de.heaal.eaf.base.IndividualFactory;
@@ -48,7 +47,6 @@ public class HillClimbingAlgorithm extends Algorithm {
     private final ComparatorIndividual comparatorIndividual;
     private int generationCounter;
     private final int numberOfGenerations;
-    private final GenerationWriter generationWriter;
     private final boolean onlyQuitIfFound;
 
     //
@@ -60,12 +58,10 @@ public class HillClimbingAlgorithm extends Algorithm {
                                  Mutation mutator,
                                  ComparatorIndividual comparatorIndividual,
                                  int numberOfGenerations,
-                                 GenerationWriter generationWriter,
                                  boolean onlyQuitIfFound)
     {
         super(comparator, mutator);
         this.numberOfGenerations = numberOfGenerations;
-        this.generationWriter = generationWriter;
         this.onlyQuitIfFound = onlyQuitIfFound;
         this.individualFactory = new GenericIndividualFactory(min, max);
         this.comparatorIndividual = comparatorIndividual;
@@ -101,7 +97,7 @@ public class HillClimbingAlgorithm extends Algorithm {
     }
 
     @Override
-    public void run() {
+    public void run() throws IOException {
         initialize(individualFactory, 1);
         generationCounter = 0;
         
@@ -110,24 +106,16 @@ public class HillClimbingAlgorithm extends Algorithm {
             System.out.println("Generation " + generationCounter);
             nextGeneration();
             if (!onlyQuitIfFound) {
-                try {
-                    generationWriter.writeGeneration(population);
-                } catch (IOException e) {
-                    System.out.println("Error while writing to file!");
-                    System.out.println(e);
-                }
+                writeGeneration();
             }
         }
 
         System.out.println("Done!");
         System.out.println("Found Minimum at: " + population.get(0).getGenome());
 
-        try {
-            generationWriter.close();
-        } catch (IOException e) {
-            System.out.println("Error while closing File!");
-            System.out.println(e);
-        }
+
+        closeWriter();
+
     }
 
 }
