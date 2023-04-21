@@ -31,7 +31,6 @@ import de.heaal.eaf.base.Individual;
 import de.heaal.eaf.base.IndividualFactory;
 import de.heaal.eaf.mutation.Mutation;
 import de.heaal.eaf.mutation.MutationOptions;
-import de.heaal.eaf.testbench.GenerationWriter;
 
 import java.io.IOException;
 import java.util.Comparator;

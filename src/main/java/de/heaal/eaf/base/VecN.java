@@ -56,24 +56,36 @@ public class VecN {
     }
     
     public VecN add(VecN other) {
+        VecN newVector = new VecN(array.length);
         for (int i = 0; i < array.length; i++) {
-            array[i] += other.array[i];
+            newVector.array[i] = array[i] + other.array[i];
         }
-        return this;
+        return newVector;
     }
     
     public VecN sub(VecN other) {
+        VecN newVector = new VecN(array.length);
         for (int i = 0; i < array.length; i++) {
-            array[i] -= other.array[i];
+            newVector.array[i] = array[i] - other.array[i];
         }
-        return this;
+        return newVector;
     }
     
     public VecN mul(VecN other) {
+        VecN newVector = new VecN(array.length);
         for (int i = 0; i < array.length; i++) {
-            array[i] *= other.array[i];
+            newVector.array[i] = array[i] * other.array[i];
         }
-        return this;
+        return newVector;
+    }
+
+    public VecN mul(float scalar) {
+        VecN newVector = new VecN(array.length);
+        for (int i = 0; i < array.length; i++) {
+            newVector.array[i] = array[i] * scalar;
+        }
+        
+        return newVector;
     }
     
     @Override

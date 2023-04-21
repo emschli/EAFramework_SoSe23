@@ -6,7 +6,6 @@ import de.heaal.eaf.evaluation.ComparatorIndividual;
 import de.heaal.eaf.mutation.Mutation;
 import de.heaal.eaf.mutation.MutationOptions;
 import de.heaal.eaf.selection.SelectionUtils;
-import de.heaal.eaf.testbench.GenerationWriter;
 
 import java.io.IOException;
 import java.util.*;
@@ -51,10 +50,9 @@ public class GeneticAlgorithm extends Algorithm {
     public void nextGeneration() {
         super.nextGeneration();
         population.sort(comparator);
-        List<Individual> children = new ArrayList<>();
 
         List<Individual> elites = population.asList().subList(0, numberOfElites);
-        children.addAll(elites);
+        List<Individual> children = new ArrayList<>(elites);
 
         while (children.size() < population.size())  {
             Individual parent1 = SelectionUtils.selectNormal(population, rng, null);

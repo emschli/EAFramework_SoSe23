@@ -70,7 +70,11 @@ public abstract class Algorithm {
         if (mutator != null)
             mutator.setRandom(rng);
     }
-    
+
+    public Algorithm(Comparator<Individual> comparator) {
+        this(comparator, null);
+    }
+
     protected void createPopulation(IndividualFactory iFak, int num) {
         population = new Population(iFak, num);
     }
@@ -101,5 +105,5 @@ public abstract class Algorithm {
         }
     }
     
-    protected abstract void run() throws IOException;
+    public abstract void run() throws IOException;
 }
