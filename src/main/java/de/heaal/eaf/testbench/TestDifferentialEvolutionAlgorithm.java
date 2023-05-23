@@ -56,8 +56,8 @@ public class TestDifferentialEvolutionAlgorithm {
                 POPULATION_SIZE,
                 NUMBER_OF_GENERATIONS,
                 ONLY_QUIT_IF_FOUND,
-                0.9f,
-                0.1f);
+                0.9f, //0.4
+                0.1f); //1
 
         algorithm.setGenerationWriter(BASEPATH + "first.csv");
         algorithm.run();

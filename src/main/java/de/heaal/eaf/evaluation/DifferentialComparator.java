@@ -23,13 +23,10 @@ public class DifferentialComparator implements Comparator<Individual> {
 
         reader.readLine();
         String line = reader.readLine();
-        int count = 0;
         while (line != null) {
-            if (count >= 1000) break;
             Float value = Float.parseFloat(line.split(";")[4].replace(",", "."));
             result.add(value);
             line = reader.readLine();
-            count++;
         }
 
         reader.close();

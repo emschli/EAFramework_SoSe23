@@ -88,7 +88,16 @@ with open(PATH_TO_MEASUREMENTS) as file:
         count = count + 1
 
 measurements = list(map(stringToFloat, measurements[1:]))
+# fig, ax = plt.subplots()
+# x2 = [bla for bla in range(len(measurements))]
+# ax.scatter(x2, measurements, s=1)
+# plt.show()
 
+y = getMinPerGeneration(PATH_TO_CSVS + "first.csv")
+x2 = [bla for bla in range(len(y))]
+fig, ax = plt.subplots()
+ax.plot(x2, y)
+plt.show()
 
 fig, ax = plt.subplots()
 ax.scatter(x, measurements, s=1)
