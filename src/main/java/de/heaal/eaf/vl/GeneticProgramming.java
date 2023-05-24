@@ -42,7 +42,7 @@ public class GeneticProgramming {
         return Math.pow(x, 4) + Math.pow(x, 3) + Math.pow(x, 2) + x + 1;
     }
 
-    private static final List<Sample<Double>> generateSamples(double start, double end, double step) {
+    private static List<Sample<Double>> generateSamples(double start, double end, double step) {
         List<Sample<Double>> result = new ArrayList<>();
         for (double i = start; i <= end ; i+=step) {
             result.add(Sample.ofDouble(i, formula(i)));
