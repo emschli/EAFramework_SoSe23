@@ -2,9 +2,12 @@ package de.heaal.eaf.geneticProgramming;
 
 import io.jenetics.prog.op.MathExpr;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 public class TrainFitness implements Comparable<TrainFitness> {
+    private static Double STEP = 1.0;
     private static Comparator<TrainFitness> COMPARE_ONLY_DISTANCE = (f1, f2) -> {
         double diff = f1.getDistanceToDestination() - f2.getDistanceToDestination();
         if(diff < 0) {
@@ -27,11 +30,45 @@ public class TrainFitness implements Comparable<TrainFitness> {
     }
 
     public static TrainFitness calculateFitness(MathExpr expr) {
-        double distanceToDestination = Double.MAX_VALUE;
-        double timeTraveled = 0.0;
-        double energyUsed = 0.0;
+        List<Double> velocityOverTime = new ArrayList<>();
+
+        double s = 0.0;
+        double t = 0.0;
+        double v = 0.0;
+        velocityOverTime.add(v);
+
+        while (s < TrainControlsGeneticProgramming.DESTINATION && v > 0.0) {
+            double a = expr.eval(s, t, v);
+            t += STEP;
+            s = getDistance(a, t, v, s);
+            v = getVelocity(a, t, v);
+            velocityOverTime.add(v);
+        }
+
+        double distanceToDestination = Math.abs(TrainControlsGeneticProgramming.DESTINATION - s);
+        double timeTraveled = t;
+        double energyUsed = calculatePowerConsumption(velocityOverTime);
 
         return new TrainFitness(distanceToDestination, timeTraveled, energyUsed);
+    }
+
+    private static double calculatePowerConsumption(List<Double> velocities) {
+        double sum = 0.0;
+        for (int i = 1; i < velocities.size(); i++) {
+            double v_n = velocities.get(i);
+            double v_n_before = velocities.get(i-1);
+            sum += (Math.pow(v_n_before, 2) + Math.pow(v_n, 2));
+        }
+
+        return 0.5 * STEP * sum;
+    }
+
+    private static double getDistance(double a, double t, double v, double s) {
+        return 0.5 * a * Math.pow(t, 2) + v * t + s;
+    }
+
+    private static double getVelocity(double a, double t, double v) {
+        return a * t + v;
     }
 
     @Override

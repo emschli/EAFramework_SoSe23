@@ -12,8 +12,8 @@ import io.jenetics.util.ISeq;
 import io.jenetics.util.RandomRegistry;
 
 public class TrainControlsGeneticProgramming {
-    private static final Double MAX_VELOCITY = 10.0;
-    private static final Double DESTINATION = 10_000.0;
+    public static final Double MAX_VELOCITY = 10.0;
+    public static final Double DESTINATION = 10_000.0;
     private static final ISeq<Op<Double>> OPERATIONS = ISeq.of(
             MathOp.ADD,
             MathOp.SUB,
