@@ -12,8 +12,8 @@ import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 public class TrainFitness implements Comparable<TrainFitness> {
-    private static Double STEP = 1.0;
-    private static Double MAX_TIME = 100_000.0;
+    static Double STEP = 1.0;
+    static Double MAX_TIME = 100_000.0;
     private static Comparator<TrainFitness> COMPARE_ONLY_DISTANCE = (f1, f2) -> {
         double diff = f1.getDistanceToDestination() - f2.getDistanceToDestination();
         if(diff < 0) {
@@ -83,11 +83,11 @@ public class TrainFitness implements Comparable<TrainFitness> {
         return 0.5 * STEP * sum;
     }
 
-    private static double getDistance(double a, double t, double v, double s) {
+    static double getDistance(double a, double t, double v, double s) {
         return 0.5 * a * Math.pow(t, 2) + v * t + s;
     }
 
-    private static double getVelocity(double a, double t, double v) {
+    static double getVelocity(double a, double t, double v) {
         return a * t + v;
     }
 

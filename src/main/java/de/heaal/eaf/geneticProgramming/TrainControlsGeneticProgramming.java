@@ -11,6 +11,8 @@ import io.jenetics.prog.op.*;
 import io.jenetics.util.ISeq;
 import io.jenetics.util.RandomRegistry;
 
+import static de.heaal.eaf.geneticProgramming.TrainFitness.*;
+
 public class TrainControlsGeneticProgramming {
     public static final Double MAX_VELOCITY = 10.0;
     public static final Double DESTINATION = 10_000.0;
@@ -43,7 +45,7 @@ public class TrainControlsGeneticProgramming {
     }
     static final ProgramChromosome<Double> PROGRAM = ProgramChromosome.of(5, OPERATIONS, TERMINALS);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         final Engine<ProgramGene<Double>, TrainFitness> engine = Engine
                 .builder(TrainControlsGeneticProgramming::fitness, PROGRAM)
                 .minimizing()
@@ -72,7 +74,34 @@ public class TrainControlsGeneticProgramming {
         makeSampleTrainRide(expr);
     }
 
-    private static void makeSampleTrainRide(MathExpr expr) {
+    private static void makeSampleTrainRide(MathExpr expr) throws InterruptedException {
+        double s = 0.0;
+        double t = 0.0;
+        double v = 0.0;
+        System.out.print(getRouteString(s));
+        Thread.sleep(50);
+        do {
+            double a = expr.eval(s, v, t);
+            t += STEP;
+            s = getDistance(a, t, v, s);
+            v = getVelocity(a, t, v);
+            System.out.print("\r" + getRouteString(s));
+            Thread.sleep(50);
+        } while (s < DESTINATION && v > 0.0 && t < MAX_TIME && v <= MAX_VELOCITY);
+    }
+    private static String train = "T";
+    private static int routeSize = 100;
+    private static String getRouteString(double s) {
+        int pos = (int) ((s / DESTINATION) * routeSize);
+        StringBuilder routeString = new StringBuilder();
+        routeString.append("S");
 
+        for (int i = 0; i < routeSize; i++) {
+            if (i == pos) routeString.append(train);
+            else routeString.append("_");
+        }
+
+        routeString.append("H");
+        return routeString.toString();
     }
 }
