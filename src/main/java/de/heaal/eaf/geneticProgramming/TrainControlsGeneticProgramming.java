@@ -18,7 +18,10 @@ public class TrainControlsGeneticProgramming {
             MathOp.ADD,
             MathOp.SUB,
             MathOp.MUL,
-            MathOp.DIV
+            MathOp.DIV,
+            MathOp.MAX,
+            MathOp.MIN,
+            MathOp.POW
     );
 
     static final ISeq<Op<Double>> TERMINALS = ISeq.of(
@@ -43,7 +46,7 @@ public class TrainControlsGeneticProgramming {
     public static void main(String[] args) {
         final Engine<ProgramGene<Double>, TrainFitness> engine = Engine
                 .builder(TrainControlsGeneticProgramming::fitness, PROGRAM)
-                .maximizing()
+                .minimizing()
                 .alterers(
                         new SingleNodeCrossover<>(),
                         new Mutator<>()
@@ -52,7 +55,7 @@ public class TrainControlsGeneticProgramming {
 
         final EvolutionResult<ProgramGene<Double>, TrainFitness> result = engine
                 .stream()
-                .limit(Limits.byFixedGeneration(100))
+                .limit(Limits.byFixedGeneration(1000))
                 .collect(EvolutionResult.toBestEvolutionResult());
 
         final ProgramGene<Double> program = result.bestPhenotype()
@@ -61,7 +64,15 @@ public class TrainControlsGeneticProgramming {
 
         final TreeNode<Op<Double>> tree = program.toTreeNode();
         MathExpr.rewrite(tree); // Simplify result program.
+        MathExpr expr = new MathExpr(tree);
         System.out.println("Generations: " + result.totalGenerations());
-        System.out.println("Function:    " + new MathExpr(tree));
+        System.out.println("Function:    " + expr);
+        System.out.println(result.bestFitness());
+
+        makeSampleTrainRide(expr);
+    }
+
+    private static void makeSampleTrainRide(MathExpr expr) {
+
     }
 }
