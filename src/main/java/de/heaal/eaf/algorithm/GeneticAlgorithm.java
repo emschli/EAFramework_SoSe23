@@ -22,11 +22,17 @@ public class GeneticAlgorithm extends Algorithm {
     private final ToCSV toCSV;
     private int gen;
 
-    public GeneticAlgorithm(float[] min, float[] max,
-                                 Comparator<Individual> comparator, Mutation mutator,
-                                 ComparatorIndividual terminationCriterion,
-                            Combination combination, Random rng, int elitism,
-                            ToCSV toCSV) {
+    public GeneticAlgorithm(
+            float[] min,
+            float[] max,
+            Comparator<Individual> comparator,
+            Mutation mutator,
+            ComparatorIndividual terminationCriterion,
+            Combination combination,
+            Random rng,
+            int elitism,
+            ToCSV toCSV)
+    {
         super(comparator, mutator, rng);
         this.indFac = new GenericIndividualFactory(min, max);
         this.terminationCriterion = terminationCriterion;
