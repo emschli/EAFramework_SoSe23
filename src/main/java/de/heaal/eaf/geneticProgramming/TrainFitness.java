@@ -7,13 +7,10 @@ import java.util.Comparator;
 import java.util.List;
 
 import static de.heaal.eaf.geneticProgramming.TrainControlsGeneticProgramming.MAX_VELOCITY;
-import static de.heaal.eaf.geneticProgramming.TrainControlsGeneticProgramming.DESTINATION;
-import static java.lang.Math.max;
-import static java.lang.Math.min;
 
 public class TrainFitness implements Comparable<TrainFitness> {
     static Double STEP = 1.0;
-    static Double MAX_TIME = 100_000.0;
+    static Double MAX_TIME = 1000.0;
     private static Comparator<TrainFitness> COMPARE_ONLY_DISTANCE = (f1, f2) -> {
         double diff = f1.getDistanceToDestination() - f2.getDistanceToDestination();
         if(diff < 0) {
@@ -27,13 +24,19 @@ public class TrainFitness implements Comparable<TrainFitness> {
 
     private static Double X = 1.0;
     private static Double Y = 1.0;
-    private static Double Z = 1.0;
+    private static Double Z = 10.0;
 
     private static Comparator<TrainFitness> COMPARE_ALL = (f1, f2) -> {
-      double value1 = X * f1.timeTraveled + Y * f1.energyUsed + Z * f1.distanceToDestination;
-      double value2 = X * f2.timeTraveled + Y * f2.energyUsed + Z * f2.distanceToDestination;
+      double value1 = X * f1.timeTraveled + Y * f1.energyUsed + Math.pow(f1.distanceToDestination, 2);
+      double value2 = X * f2.timeTraveled + Y * f2.energyUsed + Math.pow(f2.distanceToDestination, 2);
       return Double.compare(value1, value2);
     };
+
+    private static Comparator<TrainFitness> ALTERNATIVE =
+        Comparator.comparing(TrainFitness::getDistanceToDestination)
+                .thenComparing(TrainFitness::getTimeTraveled)
+                .thenComparing(TrainFitness::getEnergyUsed);
+
     private Double distanceToDestination;
     private Double timeTraveled;
     private Double energyUsed;
@@ -56,12 +59,12 @@ public class TrainFitness implements Comparable<TrainFitness> {
         do {
             double a = expr.eval(s, v, t);
             t += STEP;
-            s = getDistance(a, t, v, s);
-            v = getVelocity(a, t, v);
+            s = getDistance(a, v, s);
+            v = getVelocity(a, v);
             velocityOverTime.add(v);
-        } while (s < TrainControlsGeneticProgramming.DESTINATION && v > 0.0 && t < MAX_TIME && v <= MAX_VELOCITY);
+        } while (v > 0.0 && t < MAX_TIME && v <= MAX_VELOCITY);
 
-        if (t >= MAX_TIME || v > MAX_VELOCITY) {
+        if (v > MAX_VELOCITY) {
             return new TrainFitness(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
         }
 
@@ -83,12 +86,12 @@ public class TrainFitness implements Comparable<TrainFitness> {
         return 0.5 * STEP * sum;
     }
 
-    static double getDistance(double a, double t, double v, double s) {
-        return 0.5 * a * Math.pow(t, 2) + v * t + s;
+    static double getDistance(double a, double v, double s) {
+        return 0.5 * a * Math.pow(STEP, 2) + v * STEP + s;
     }
 
-    static double getVelocity(double a, double t, double v) {
-        return a * t + v;
+    static double getVelocity(double a, double v) {
+        return a * STEP + v;
     }
 
     @Override

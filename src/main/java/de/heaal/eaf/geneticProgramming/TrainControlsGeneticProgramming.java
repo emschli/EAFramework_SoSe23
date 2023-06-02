@@ -15,7 +15,7 @@ import static de.heaal.eaf.geneticProgramming.TrainFitness.*;
 
 public class TrainControlsGeneticProgramming {
     public static final Double MAX_VELOCITY = 10.0;
-    public static final Double DESTINATION = 10_000.0;
+    public static final Double DESTINATION = 1000.0;
     private static final ISeq<Op<Double>> OPERATIONS = ISeq.of(
             MathOp.ADD,
             MathOp.SUB,
@@ -58,6 +58,7 @@ public class TrainControlsGeneticProgramming {
         final EvolutionResult<ProgramGene<Double>, TrainFitness> result = engine
                 .stream()
                 .limit(Limits.byFixedGeneration(1000))
+//                .limit(Limits.byFitnessThreshold(new TrainFitness(0.0, 500.0, 500.0)))
                 .collect(EvolutionResult.toBestEvolutionResult());
 
         final ProgramGene<Double> program = result.bestPhenotype()
@@ -70,24 +71,29 @@ public class TrainControlsGeneticProgramming {
         System.out.println("Generations: " + result.totalGenerations());
         System.out.println("Function:    " + expr);
         System.out.println(result.bestFitness());
+        System.out.println("\n");
 
-        makeSampleTrainRide(expr);
+        while (true) {
+            makeSampleTrainRide(expr);
+        }
     }
 
     private static void makeSampleTrainRide(MathExpr expr) throws InterruptedException {
         double s = 0.0;
         double t = 0.0;
         double v = 0.0;
-        System.out.print(getRouteString(s));
+        System.out.print("\r" + getRouteString(s));
         Thread.sleep(50);
         do {
             double a = expr.eval(s, v, t);
             t += STEP;
-            s = getDistance(a, t, v, s);
-            v = getVelocity(a, t, v);
+            s = getDistance(a, v, s);
+            v = getVelocity(a, v);
             System.out.print("\r" + getRouteString(s));
-            Thread.sleep(50);
+            Thread.sleep(100);
         } while (s < DESTINATION && v > 0.0 && t < MAX_TIME && v <= MAX_VELOCITY);
+
+        System.out.println("\n Final Velocity: " + v);
     }
     private static String train = "T";
     private static int routeSize = 100;
@@ -96,12 +102,18 @@ public class TrainControlsGeneticProgramming {
         StringBuilder routeString = new StringBuilder();
         routeString.append("S");
 
-        for (int i = 0; i < routeSize; i++) {
-            if (i == pos) routeString.append(train);
-            else routeString.append("_");
+        for (int i = 0; i <= routeSize || i <= pos; i++) {
+            if (i == pos) {
+                routeString.append(train);
+            }
+            else if (i == routeSize)  {
+                routeString.append("H");
+            }
+            else {
+                routeString.append("_");
+            }
         }
 
-        routeString.append("H");
         return routeString.toString();
     }
 }
